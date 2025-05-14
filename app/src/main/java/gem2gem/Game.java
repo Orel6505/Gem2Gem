@@ -1,11 +1,25 @@
 package gem2gem;
 
+import java.util.Random;
+
 public class Game
 {
 	public static final int BOARD_SIZE = 10;
-	
-	public static char[][] board = null;
-	
+
+	public static char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+
+	public static void createBoard() {
+		Random rand = new Random();
+
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				char c = (char) ('1' + rand.nextInt(5));
+				board[row][col] = c;
+
+			}
+		}
+	}
+
 	public static void printBoard()
 	{
 		if (board == null)
@@ -16,7 +30,7 @@ public class Game
 			{
 				for (int j = 0; j < board[i].length; j++)
 				{
-					System.out.print(" " + String.valueOf(board[i][j]) + " ");
+					System.out.print(" " + board[i][j] + " ");
 				}
 				System.out.println();
 			}
