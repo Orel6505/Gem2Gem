@@ -1,6 +1,7 @@
 package gem2gem;
 
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Game
 {
@@ -59,7 +60,7 @@ public class Game
 	
 	public void updateBoard()
 	{
-		for (int i = 0; i < board.length; i++)
+		for(int i = 0; i < board.length; i++)
 		{
 			for (int j = 0; j < board[i].length; j++)
 			{
@@ -70,4 +71,55 @@ public class Game
 			}
 		}
 	}
+
+	public static void pullDownAllGems(char[][] board) {
+    for (int x = 0; x < BOARD_SIZE; x++) {
+        char[] gemsInColumn = new char[BOARD_SIZE];
+        int count = 0;
+     
+        for(int y = 0; y < BOARD_SIZE; y++) {
+            if (board[x][y] != '=') {
+                gemsInColumn[count++] = board[x][y];
+            }
+        }
+        for(int y = 0; y < BOARD_SIZE - count; y++) {
+            board[x][y] = '=';
+        }
+        for(int y = 0; y < count; y++) {
+            board[x][BOARD_SIZE - count + y] = gemsInColumn[y];
+        }
+    }
+	}
+
+	public ArrayList<ArrayList<gem2gem.Position>> find_matching_gems(char[][] board){
+    ArrayList<ArrayList<gem2gem.Position>> match = new ArrayList<ArrayList<gem2gem.Position>>();
+
+    for(int r = 0; r < 10; r++){
+        for(int c = 0; c<10; c++){
+
+            if (c+2<10 &&board[r][c]==board[r][c+1]&& board[r][c+1] ==board[r][c+2]){
+                ArrayList<gem2gem.Position> row = new ArrayList<gem2gem.Position>();
+                int count = 0;
+                while( c + count < 10 && board[r][c] ==board[r][c+count]){
+                        row.add(new Position(r, c + count));
+                        count += 1;
+                match.add(row);
+                }
+
+            }
+
+            if (r+2 < 10 && board[r][c] == board[r+1][c] &&board[r+1][c]== board[r+2][c]){
+                ArrayList<gem2gem.Position> row = new ArrayList<gem2gem.Position>();
+                int count = 0;
+                while( r + count < 10 && board[r][c] ==board[r+count][c]){
+                    row.add(new Position(r, c + count));
+                    count += 1;
+                match.add(row);
+                }
+            }
+        }
+    }
+    return match;
+   }
 }
+
