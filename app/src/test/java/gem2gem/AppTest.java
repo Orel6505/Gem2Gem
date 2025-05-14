@@ -6,8 +6,118 @@ package gem2gem;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+
 class AppTest {
-    @Test void appHasAGreeting() {
-        App classUnderTest = new App();
+
+    private Game game;
+    
+    @BeforeEach
+    public void setUp() {
+        game = new Game();
+    }
+    
+    @Test
+    public void testNoMatchOnCustomBoard() {
+        // Create a board with no three-in-a-row horizontally or vertically.
+        char[][] noMatchBoard = {
+            {'1', '2', '3', '4', '5', '1', '2', '3', '4', '5'},
+            {'2', '3', '4', '5', '1', '2', '3', '4', '5', '1'},
+            {'3', '4', '5', '1', '2', '3', '4', '5', '1', '2'},
+            {'4', '5', '1', '2', '3', '4', '5', '1', '2', '3'},
+            {'5', '1', '2', '3', '4', '5', '1', '2', '3', '4'},
+            {'1', '2', '3', '4', '5', '1', '2', '3', '4', '5'},
+            {'2', '3', '4', '5', '1', '2', '3', '4', '5', '1'},
+            {'3', '4', '5', '1', '2', '3', '4', '5', '1', '2'},
+            {'4', '5', '1', '2', '3', '4', '5', '1', '2', '3'},
+            {'5', '1', '2', '3', '4', '5', '1', '2', '3', '4'}
+        };
+        game.board = noMatchBoard;
+        List<ArrayList<Position>> matches = game.findMatchingGems();
+        assertTrue(matches.isEmpty(), "There should be no matching gems on a board with no triples.");
+    }
+    
+    @Test
+    public void testHorizontalMatchDetection() {
+        // Create a board with a horizontal match on row 0, columns 0-2
+        char[][] board = new char[Game.BOARD_SIZE][Game.BOARD_SIZE];
+        // Initialize with a default value
+        for (int r = 0; r < Game.BOARD_SIZE; r++) {
+            for (int c = 0; c < Game.BOARD_SIZE; c++) {
+                board[r][c] = '2';
+            }
+        }
+        // Place a horizontal match with '3' at row 0, columns 0-2.
+        board[0][0] = '3';
+        board[0][1] = '3';
+        board[0][2] = '3';
+        game.board = board;
+        
+        List<ArrayList<Position>> matches = game.findMatchingGems();
+        boolean foundHorizontal = false;
+        for (ArrayList<Position> match : matches) {
+            if (match.size() >= 3 && match.get(0).getRow() == 0) {
+                foundHorizontal = true;
+                break;
+            }
+        }
+        assertTrue(foundHorizontal, "A horizontal match should be detected in row 0.");
+    }
+    
+    @Test
+    public void testVerticalMatchDetection() {
+        // Create a board with a vertical match on col 0, rows 0-2
+        char[][] board = new char[Game.BOARD_SIZE][Game.BOARD_SIZE];
+        // Initialize with a default value
+        for (int r = 0; r < Game.BOARD_SIZE; r++) {
+            for (int c = 0; c < Game.BOARD_SIZE; c++) {
+                board[r][c] = '4';
+            }
+        }
+        // Place a vertical match with '5' at col 0, rows 0-2.
+        board[0][0] = '5';
+        board[1][0] = '5';
+        board[2][0] = '5';
+        game.board = board;
+        
+        List<ArrayList<Position>> matches = game.findMatchingGems();
+        boolean foundVertical = false;
+        for (ArrayList<Position> match : matches) {
+            if (match.size() >= 3 && match.get(0).getCol() == 0) {
+                foundVertical = true;
+                break;
+            }
+        }
+        assertTrue(foundVertical, "A vertical match should be detected in column 0.");
+    }
+    
+    @Test
+    public void testRemoveFunction() {
+        // Setup a board with a known horizontal match and then call remove
+        char[][] board = new char[Game.BOARD_SIZE][Game.BOARD_SIZE];
+        // Fill board with '1'
+        for (int r = 0; r < Game.BOARD_SIZE; r++) {
+            for (int c = 0; c < Game.BOARD_SIZE; c++) {
+                board[r][c] = '1';
+            }
+        }
+        // Create a horizontal match at row 5, columns 3-5 with '2'
+        board[5][3] = '2';
+        board[5][4] = '2';
+        board[5][5] = '2';
+        game.board = board;
+        
+        // Ensure that match is detected.
+        List<ArrayList<Position>> initialMatches = game.findMatchingGems();
+        assertFalse(initialMatches.isEmpty(), "There should be at least one match before removal.");
+        
+        game.remove();
+        // After remove, the board is updated.
+        // We can test that further chain reactions are resolved by checking no immediate match:
+        List<ArrayList<Position>> afterRemoveMatches = game.findMatchingGems();
+        assertTrue(afterRemoveMatches.isEmpty(), "After removal and update, there should be no more matches.");
     }
 }
