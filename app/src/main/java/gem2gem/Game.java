@@ -15,13 +15,30 @@ public class Game
 
 	// Facade
 	// This method is the entry point for the game
-	public void start()
-	{
+	public void start() {
 		System.out.println("Game started");
+		// Create the board ensuring no initial matches
 		createBoard();
 		printBoard();
+	
+		// Process chain reactions while matching gems exist
+		boolean matchesFound;
+		do {
+			List<ArrayList<Position>> matches = findMatchingGems();
+			if (matches.isEmpty()) {
+				matchesFound = false;
+			} else {
+				matchesFound = true;
+				System.out.println("Matches found: " + matches.size());
+				// Remove all matching gems, drop down the remaining ones, and update empty cells
+				remove();
+				printBoard();
+			}
+		} while (matchesFound);
+	
+		System.out.println("No more matches. Game Over.");
 	}
-
+	
 	public void createBoard() {
 
 		for (int row = 0; row < 10; row++) {
