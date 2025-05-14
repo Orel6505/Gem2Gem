@@ -2,6 +2,7 @@ package gem2gem;
 
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game
 {
@@ -72,66 +73,99 @@ public class Game
 		}
 	}
 
-	public static void pullDownAllGems() {
-    for (int x = 0; x < BOARD_SIZE; x++) {
-        char[] gemsInColumn = new char[BOARD_SIZE];
-        int count = 0;
-     
-        for(int y = 0; y < BOARD_SIZE; y++) {
-            if (board[x][y] != EMPTY) {
-                gemsInColumn[count++] = board[x][y];
-            }
-        }
-        for(int y = 0; y < BOARD_SIZE - count; y++) {
-            board[x][y] =  EMPTY;
-        }
-        for(int y = 0; y < count; y++) {
-            board[x][BOARD_SIZE - count + y] = gemsInColumn[y];
-        }
-    }
+	private boolean isWithinBoard(int row, int col) {
+		return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
 	}
 
-	public ArrayList<ArrayList<gem2gem.Position>> find_matching_gems(){
-    ArrayList<ArrayList<gem2gem.Position>> match = new ArrayList<ArrayList<gem2gem.Position>>();
-    for(int r = 0; r < 10; r++){
-        for(int c = 0; c<10; c++){
+	private ArrayList<Position> findHorizontalMatch(int row, int col) {
+		ArrayList<Position> result = new ArrayList<>();
+		char gem = board[row][col];
+		int currentCol = col;
+		while (isWithinBoard(row, currentCol) && board[row][currentCol] == gem) {
+			result.add(new Position(row, currentCol));
+			currentCol++;
+		}
+		return result;
+	}
 
-            if (c+2<10 &&board[r][c]==board[r][c+1]&& board[r][c+1] ==board[r][c+2]){
-                ArrayList<gem2gem.Position> row = new ArrayList<gem2gem.Position>();
-                int count = 0;
-                while( c + count < 10 && board[r][c] ==board[r][c+count]){
-                        row.add(new Position(r, c + count));
-                        count += 1;
-                match.add(row);
-                }
+	private ArrayList<Position> findVerticalMatch(int row, int col) {
+		ArrayList<Position> result = new ArrayList<>();
+		char gem = board[row][col];
+		int currentRow = row;
+		while (isWithinBoard(currentRow, col) && board[currentRow][col] == gem) {
+			result.add(new Position(currentRow, col));
+			currentRow++;
+		}
+		return result;
+	}
 
-            }
+	public List<ArrayList<Position>> findMatchingGems() {
+		ArrayList<ArrayList<Position>> matches = new ArrayList<>();
+		boolean[][] visited = new boolean[BOARD_SIZE][BOARD_SIZE];
 
-            if (r+2 < 10 && board[r][c] == board[r+1][c] &&board[r+1][c]== board[r+2][c]){
-                ArrayList<gem2gem.Position> row = new ArrayList<gem2gem.Position>();
-                int count = 0;
-                while( r + count < 10 && board[r][c] ==board[r+count][c]){
-                    row.add(new Position(r, c + count));
-                    count += 1;
-                match.add(row);
-                }
-            }
-        }
-    }
-    return match;
-   }
-   public void remove(){
-	ArrayList<ArrayList<gem2gem.Position>> match = find_matching_gems();
-	for (ArrayList<gem2gem.Position> row : match) {
-		for (gem2gem.Position pos : row) {
-			board[pos.getX()][pos.getY()] = EMPTY;
+		for (int row = 0; row < BOARD_SIZE; row++) {
+			for (int col = 0; col < BOARD_SIZE; col++) {
+				if (col + 2 < BOARD_SIZE && !visited[row][col]) {
+					ArrayList<Position> horizontalMatch = findHorizontalMatch(row, col);
+					if (horizontalMatch.size() >= 3) {
+						matches.add(horizontalMatch);
+						for (Position pos : horizontalMatch) {
+							visited[pos.getX()][pos.getY()] = true;
+						}
+					}
+				}
+				if (row + 2 < BOARD_SIZE && !visited[row][col]) {
+					ArrayList<Position> verticalMatch = findVerticalMatch(row, col);
+					if (verticalMatch.size() >= 3) {
+						matches.add(verticalMatch);
+						for (Position pos : verticalMatch) {
+							visited[pos.getX()][pos.getY()] = true;
+						}
+					}
+				}
+			}
+		}
+		return matches;
+	}
+
+	private char[] extractNonEmptyGemsFromColumn(int col) {
+		char[] temp = new char[BOARD_SIZE];
+		int count = 0;
+		for (int row = 0; row < BOARD_SIZE; row++) {
+			if (board[row][col] != EMPTY) {
+				temp[count++] = board[row][col];
+			}
+		}
+		char[] gems = new char[count];
+		System.arraycopy(temp, 0, gems, 0, count);
+		return gems;
+	}
+
+	private void fillColumnWithGems(int col, char[] gems) {
+		int count = gems.length;
+		for (int row = 0; row < BOARD_SIZE - count; row++) {
+			board[row][col] = EMPTY;
+		}
+		for (int row = BOARD_SIZE - count; row < BOARD_SIZE; row++) {
+			board[row][col] = gems[row - (BOARD_SIZE - count)];
 		}
 	}
-	pullDownAllGems();
-	updateBoard();
 
+	public void pullDownAllGems() {
+		for (int col = 0; col < BOARD_SIZE; col++) {
+			char[] gems = extractNonEmptyGemsFromColumn(col);
+			fillColumnWithGems(col, gems);
+		}
+	}
 
-
-   }
+	public void remove() {
+		List<ArrayList<Position>> matches = findMatchingGems();
+		for (ArrayList<Position> match : matches) {
+			for (Position pos : match) {
+				board[pos.getX()][pos.getY()] = EMPTY;
+			}
+		}
+		pullDownAllGems();
+		updateBoard();
+	}
 }
-
