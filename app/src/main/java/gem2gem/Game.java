@@ -6,14 +6,10 @@ public class Game
 {
 	public static final int BOARD_SIZE = 10;
 
-	public static char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+	public char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
 	public static final char EMPTY = '=';
 
-	public static Random rand = new Random();
-
-	public Game(){
-		this.board = new char[BOARD_SIZE][BOARD_SIZE];
-	}
+	public static final Random rand = new Random();
 
 	// Facade
 	// This method is the entry point for the game
@@ -24,7 +20,7 @@ public class Game
 		printBoard();
 	}
 
-	public static void createBoard() {
+	public void createBoard() {
 
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
@@ -38,16 +34,16 @@ public class Game
 		}
 	}
 
-	public static char generateNewValue() {
+	public char generateNewValue() {
 		return (char)('1' + rand.nextInt(5));
 	}
 
-	public static boolean isNotValid(int row, int col,char c){
+	public boolean isNotValid(int row, int col,char c){
 		return (col >= 2 && board[row][col - 1] == c && board[row][col - 2] == c) ||
 			(row >= 2 && board[row - 1][col] == c && board[row - 2][col] == c);
 	}
 
-	public static void printBoard()
+	public void printBoard()
 	{
 		if (board == null) return;
 		
@@ -61,7 +57,7 @@ public class Game
 		}
 	}
 	
-	public static void updateBoard()
+	public void updateBoard()
 	{
 		for (int i = 0; i < board.length; i++)
 		{
