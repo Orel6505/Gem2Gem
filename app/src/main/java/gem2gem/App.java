@@ -3,12 +3,9 @@
  */
 package gem2gem;
 
-
-import static gem2gem.Game.*;
-
 public class App {
     public static void main(String[] args) {
-        createBoard();
-        printBoard();
+        Game game = new Game();
+        game.start(); //Facade
     }
 }

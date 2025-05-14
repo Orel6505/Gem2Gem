@@ -11,6 +11,19 @@ public class Game
 
 	public static Random rand = new Random();
 
+	public Game(){
+		this.board = new char[BOARD_SIZE][BOARD_SIZE];
+	}
+
+	// Facade
+	// This method is the entry point for the game
+	public void start()
+	{
+		System.out.println("Game started");
+		createBoard();
+		printBoard();
+	}
+
 	public static void createBoard() {
 
 		for (int row = 0; row < 10; row++) {
