@@ -72,18 +72,18 @@ public class Game
 		}
 	}
 
-	public static void pullDownAllGems(char[][] board) {
+	public static void pullDownAllGems() {
     for (int x = 0; x < BOARD_SIZE; x++) {
         char[] gemsInColumn = new char[BOARD_SIZE];
         int count = 0;
      
         for(int y = 0; y < BOARD_SIZE; y++) {
-            if (board[x][y] != '=') {
+            if (board[x][y] != EMPTY) {
                 gemsInColumn[count++] = board[x][y];
             }
         }
         for(int y = 0; y < BOARD_SIZE - count; y++) {
-            board[x][y] = '=';
+            board[x][y] =  EMPTY;
         }
         for(int y = 0; y < count; y++) {
             board[x][BOARD_SIZE - count + y] = gemsInColumn[y];
@@ -91,9 +91,8 @@ public class Game
     }
 	}
 
-	public ArrayList<ArrayList<gem2gem.Position>> find_matching_gems(char[][] board){
+	public ArrayList<ArrayList<gem2gem.Position>> find_matching_gems(){
     ArrayList<ArrayList<gem2gem.Position>> match = new ArrayList<ArrayList<gem2gem.Position>>();
-
     for(int r = 0; r < 10; r++){
         for(int c = 0; c<10; c++){
 
@@ -120,6 +119,19 @@ public class Game
         }
     }
     return match;
+   }
+   public void remove(){
+	ArrayList<ArrayList<gem2gem.Position>> match = find_matching_gems();
+	for (ArrayList<gem2gem.Position> row : match) {
+		for (gem2gem.Position pos : row) {
+			board[pos.getX()][pos.getY()] = EMPTY;
+		}
+	}
+	pullDownAllGems();
+	updateBoard();
+
+
+
    }
 }
 
