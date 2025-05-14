@@ -5,51 +5,43 @@ import java.util.Random;
 public class Game
 {
 	public static final int BOARD_SIZE = 10;
+	private char[][] board;
 
-	public static char[][] board = new char[BOARD_SIZE][BOARD_SIZE];
+	public static final Random rand = new Random();
 
-	public static void createBoard() {
-		Random rand = new Random();
+	public Game(){
+		this.board = new char[BOARD_SIZE][BOARD_SIZE];
+	}
 
+	// Facade
+	// This method is the entry point for the game
+	public void start()
+	{
+		System.out.println("Game started");
+		createBoard();
+		printBoard();
+	}
+
+	public void createBoard() {
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
 				char c = (char) ('1' + rand.nextInt(5));
-				board[row][col] = c;
-
+				this.board[row][col] = c;
 			}
 		}
 	}
 
-	public static void printBoard()
+	public void printBoard()
 	{
-		if (board == null)
-			System.out.println("Null board");
-		else
+		if (board == null) return;
+
+		for (int i = 0; i < board.length; i++)
 		{
-			for (int i = 0; i < board.length; i++)
+			for (int j = 0; j < board[i].length; j++)
 			{
-				for (int j = 0; j < board[i].length; j++)
-				{
-					System.out.print(" " + board[i][j] + " ");
-				}
-				System.out.println();
+				System.out.print(" " + board[i][j] + " ");
 			}
-		}
-	}
-	
-	public static void updateBoard()
-	{
-		if (board == null)
-		{
-			board = new char[BOARD_SIZE][BOARD_SIZE];
-			
-			for (int i = 0; i < board.length; i++)
-			{
-				for (int j = 0; j < board[i].length; j++)
-				{
-					board[i][j] = '=';
-				}
-			}
+			System.out.println();
 		}
 	}
 }
