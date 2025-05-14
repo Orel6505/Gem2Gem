@@ -2,15 +2,17 @@ package gem2gem;
 
 import java.util.Random;
 
+import gem2gem.item.Item;
+
 public class Game
 {
 	public static final int BOARD_SIZE = 10;
-	private char[][] board;
+	private Item[][] board;
 
 	public static final Random rand = new Random();
 
 	public Game(){
-		this.board = new char[BOARD_SIZE][BOARD_SIZE];
+		this.board = new Item[BOARD_SIZE][BOARD_SIZE];
 	}
 
 	// Facade
@@ -25,7 +27,7 @@ public class Game
 	public void createBoard() {
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
-				char c = (char) ('1' + rand.nextInt(5));
+				Item c = (char) ('1' + rand.nextInt(5));
 				this.board[row][col] = c;
 			}
 		}

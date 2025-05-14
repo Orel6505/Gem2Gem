@@ -1,15 +1,13 @@
-package gem2gem;
+package gem2gem.item;
 
-public class Item {
+public abstract class Item {
     protected Character name;
 
-    public Item(char name){
-        this.name = name;
-    }
-
-    public char getName() {
+    public Character getName() {
         return this.name;
     }
+
+    public abstract void moveFunction();
     
     @Override
     public boolean equals(Object obj) {
@@ -27,4 +25,6 @@ public class Item {
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
     }
+
+    
 }

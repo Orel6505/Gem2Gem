@@ -1,0 +1,13 @@
+package gem2gem;
+
+public class ItemFactory {
+
+    public static final Character MIN_NORMAL_ITEMS = '1';
+    public static final Character MAX_NORMAL_ITEMS = '5';
+    
+    // Factory method to create Item objects
+    public static Item createItem(Character name) {
+        if (name >= MIN_NORMAL_ITEMS && name <= MAX_NORMAL_ITEMS) return new Item(name);
+        throw new IllegalArgumentException("Invalid item name: " + name);
+    }
+}
